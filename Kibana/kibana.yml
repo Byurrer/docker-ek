@@ -1,0 +1,8 @@
+# https://www.elastic.co/guide/en/kibana/current/settings.html
+server.name: kibana
+server.host: 0.0.0.0
+monitoring.ui.container.elasticsearch.enabled: true
+
+elasticsearch.hosts: [ "http://elasticsearch:9200" ]
+elasticsearch.username: kibana_system
+elasticsearch.password: ${KIBANA_SYSTEM_PASSWORD}

@@ -1,0 +1,4 @@
+# https://www.elastic.co/guide/en/elasticsearch/reference/current/settings.html
+cluster.name: "docker-cluster"
+network.host: 0.0.0.0
+xpack.security.enabled: true

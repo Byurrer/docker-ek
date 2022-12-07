@@ -1,0 +1,49 @@
+version: '3.7'
+
+services:
+
+  setup:
+    image: byurrer/ek-setup:7.16.3
+    init: true
+    volumes:
+      - ek-setup:/state:Z
+    environment:
+      ELASTIC_PASSWORD: changeme
+      KIBANA_SYSTEM_PASSWORD: changeme
+    networks:
+      - ek
+    depends_on:
+      - elasticsearch
+
+  elasticsearch:
+    image: byurrer/elasticsearch:7.16.3
+    volumes:
+      - elasticsearch:/usr/share/elasticsearch/data:z
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      ES_JAVA_OPTS: -Xms512m -Xmx512m
+      ELASTIC_PASSWORD: changeme
+      discovery.type: single-node
+    networks:
+      - ek
+
+  kibana:
+    image: byurrer/kibana:7.16.3
+    ports:
+      - "5601:5601"
+    environment:
+      KIBANA_SYSTEM_PASSWORD: changeme
+    networks:
+      - ek
+    depends_on:
+      - elasticsearch
+
+networks:
+  ek:
+    driver: bridge
+
+volumes:
+  elasticsearch:
+  ek-setup:

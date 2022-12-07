@@ -1,0 +1,59 @@
+version: '3.7'
+
+services:
+
+  setup:
+    build:
+      context: ./Setup
+      args:
+        ELASTIC_VERSION: ${ELASTIC_VERSION}
+    init: true
+    volumes:
+      - ek-setup:/state:Z
+    environment:
+      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD}
+      KIBANA_SYSTEM_PASSWORD: ${KIBANA_SYSTEM_PASSWORD}
+      NEED_SHUTDOWN: 1
+    networks:
+      - ek
+    depends_on:
+      - elasticsearch
+
+  elasticsearch:
+    build:
+      context: ./Elasticsearch
+      args:
+        ELASTIC_VERSION: ${ELASTIC_VERSION}
+    volumes:
+      - elasticsearch:/usr/share/elasticsearch/data:z
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      ES_JAVA_OPTS: -Xms512m -Xmx512m
+      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD}
+      discovery.type: single-node
+    networks:
+      - ek
+
+  kibana:
+    build:
+      context: ./Kibana
+      args:
+        ELASTIC_VERSION: ${ELASTIC_VERSION}
+    ports:
+      - "5601:5601"
+    environment:
+      KIBANA_SYSTEM_PASSWORD: ${KIBANA_SYSTEM_PASSWORD}
+    networks:
+      - ek
+    depends_on:
+      - elasticsearch
+
+networks:
+  ek:
+    driver: bridge
+
+volumes:
+  elasticsearch:
+  ek-setup:
