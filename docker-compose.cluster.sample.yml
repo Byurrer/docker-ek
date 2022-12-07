@@ -10,6 +10,7 @@ services:
     environment:
       ELASTIC_PASSWORD: changeme
       KIBANA_SYSTEM_PASSWORD: changeme
+      NEED_SHUTDOWN: 1
     networks:
       - ek
     depends_on:
